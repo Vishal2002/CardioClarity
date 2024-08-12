@@ -1,0 +1,32 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Terra API",
+    "version": "unknown"
+  },
+  "servers": [
+    {
+      "url": "https://api.tryterra.co/v2"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "sec0": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key",
+        "x-default": "ussv5SAQ53a1nNTxsMr9G41zj2KUhYMk5eDU1hjG"
+      }
+    }
+  },
+  "security": [
+    {
+      "sec0": []
+    }
+  ],
+  "paths": {},
+  "x-readme": {
+    "headers": []
+  },
+  "x-readme-fauxas": true
+}

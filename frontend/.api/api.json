@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "apis": [
+    {
+      "identifier": "tryterra",
+      "source": "@tryterra/v2.0#rqnog4dla4408yi",
+      "integrity": "sha512-+ZikbMYtQFQb1g3Iueuk1/jwoZld6Oj1liF4ISrFvkXV1B/rtwcYnENzLX5f0D2gMIA2fUmbTb7mr2WiZOjNxA==",
+      "installerVersion": "6.1.2"
+    }
+  ]
+}
