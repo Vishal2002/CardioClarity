@@ -42,10 +42,11 @@ Our solution uses data from wearable devices to create a responsive heart attack
 
 ### Web Application
 
-- Built a responsive web interface using React.js
+- Built a  web interface using React.js
 - Implemented a Node.js/Express backend for data processing and scoring
 - Set up MongoDB for data storage
-- Integrated a generative AI model for personalized health advice
+- Integrated a generative AI model for personalized health advice with GEMINI API
+- A Special Thanks to [Terra API](https://tryterra.co/) which made working with wearable data a  calk   walk.Highly recommend to use this in your next Project.
 
 ## GitHub Repository Structure
 
@@ -56,7 +57,7 @@ Our solution uses data from wearable devices to create a responsive heart attack
 │   ├── .gitignore
 │   ├── public/
 │   └── package.json
-├── server/
+├── backend/
 │   ├── genai/genai.js
 │   ├── db.js
 │   ├── route.js
@@ -67,13 +68,27 @@ Our solution uses data from wearable devices to create a responsive heart attack
 
 ```
 
-## How to Run the Project
+# How to Run the Project
 
 1. Clone the repository
-2. Install dependencies: `npm install` in both root and client directories
-3. Set up MongoDB and update connection string in server config
-4. Run the backend: `npm run server`
-5. In a new terminal, start the React frontend: `npm run client`
+2. Install dependencies: Run `npm install` in both frontend and backend directories
+3. Set up environment variables:
+   - Create a `.env` file in the backend directory
+   - Add the following variables to the `.env` file:
+     ```
+     TERRA_API_KEY=your_terra_api_key
+     TERRA_DEV_ID=your_terra_dev_id
+     PORT=5000
+     MONGODB_URI=your_mongodb_connection_string
+     TERRA_WEBHOOK_SECRET=your_terra_webhook_secret
+     JWT_SECRET=your_jwt_secret
+     GEMINI_API_KEY=your_gemini_api_key
+     ```
+   - Replace `your_*` placeholders with your actual credentials
+4. Run the backend: `npm run start`
+5. In a new terminal, start the React frontend: `npm run dev`
+
+
 
 ## Future Work
 
@@ -92,6 +107,14 @@ This solution has the potential to make a significant impact:
 3. **Healthcare System Support**: By reducing emergency cases, we can help alleviate the burden on the healthcare system.
 4. **Data-Driven Insights**: With future data collection, this project could provide valuable insights for medical research and public health initiatives.
 
+## For a Quick Look 
+
+- Visit the Site [here]()
+
+**Email:** `Test@gmail.com`  
+**Password:** `Test@1234`
+
+ 
 ## Conclusion
 
-This project represents a proof-of-concept for using wearable data to detect early signs of heart issues. While currently limited by available data, it demonstrates the potential for a more comprehensive system. With further development and data collection, this approach could significantly impact heart health management worldwide, potentially saving countless lives.
+This project represents a proof-of-concept for using wearable data to detect early signs of heart issues not a complete product. While currently limited by available data, it demonstrates the potential for a more comprehensive system. With further development and data collection, this approach could significantly impact heart health management worldwide, potentially saving countless lives.

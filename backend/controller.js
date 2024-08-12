@@ -100,11 +100,11 @@ exports.consumeTerraWebhook = async (req, res) => {
   res.sendStatus(200);
 
   const data = req.body;
-  console.log(data.user.user_id);
+  // console.log(data.user.user_id);
   const allUsers = await User.find({});
-console.log("All users:", allUsers);
+// console.log("All users:", allUsers);
   const user = await User.findOne({terraUserId:data.user.user_id });
-  console.log(user,"date from request");
+  // console.log(user,"date from request");
   
   try {
     if (data.type === 'activity' && data.data) {
@@ -349,9 +349,9 @@ exports.calculateAndStoreScore = async (userId) => {
     const latestSleepData = await SleepData.findOne({ userId }).sort({ createdAt: -1 }).limit(1).lean();
     const latestBodyData = await BodyData.findOne({ userId }).sort({ createdAt: -1 }).limit(1).lean();
 
-    console.log(latestActivityData,"Activity");
-    console.log(latestBodyData,"Body");
-    console.log(latestSleepData,"Sleep");
+    // console.log(latestActivityData,"Activity");
+    // console.log(latestBodyData,"Body");
+    // console.log(latestSleepData,"Sleep");
 
     // Calculate the overall risk score and component scores using the latest data
     const { overallRiskScore, componentScores } = await calculateOverallHeartRiskScore(
@@ -360,9 +360,9 @@ exports.calculateAndStoreScore = async (userId) => {
       latestSleepData,
       latestBodyData
     );
-    console.log("Before ai feedback: " );
+    // console.log("Before ai feedback: " );
     const aiFeedback = await generateFeedback(componentScores, overallRiskScore);
-    console.log(aiFeedback,"feedback");
+    // console.log(aiFeedback,"feedback");
     // Create and save a new HealthScore
     const healthScore = new HealthScore({
       userId: user._id,
