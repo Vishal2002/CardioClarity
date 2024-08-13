@@ -37,8 +37,8 @@ const Signup = () => {
      const response=await register(values);
      console.log(response);
      if(response.status===201){
-      const terraSession = await generateTerraWidgetSession(response.data.data._id);
-      window.open(terraSession.url, '_blank');
+      // const terraSession = await generateTerraWidgetSession(response.data.data._id);
+      window.open(response.data.terraWidgetUrl, '_blank');
       navigate('/signin')
      }
      else{

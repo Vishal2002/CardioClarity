@@ -45,13 +45,13 @@ exports.createUser = async (req, res) => {
     newUser.userId = uuidv4();
     await newUser.save();
 
-    const terraSession = await terra.generateWidgetSession(
-      newUser.userId,
-      ["FITBIT"],
-      "EN",
-      "http://localhost:5173/signin",
-      "http://localhost:5173/signup"
-    );
+    const terraSession = await terra.generateWidgetSession({
+      referenceId: newUser.userId,
+      providers: ["FITBIT"],
+      language: "EN",
+      authSuccessRedirectUrl: "http://localhost:5173/signin",
+      authFailureRedirectUrl: "http://localhost:5173/signup"
+      });
 
     if (terraSession.status === "success") {
       res.status(201).json({
