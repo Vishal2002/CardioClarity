@@ -15,7 +15,7 @@ const Signin = () => {
   const handleSubmit = async (values, { setSubmitting, setFieldError }) => {
     try {
       const response = await signin(values.email, values.password);
-       console.log(response);
+      //  console.log(response);
       const userData = {
         token: response.token,
         name: response.name,

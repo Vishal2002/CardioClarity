@@ -14,7 +14,7 @@ const ScoreCard = ({ title, score, icon, feedback }) => (
 
 const Scoreboard = () => {
   const [data, setData] = useState(null);
-  console.log(data);
+  // console.log(data);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -22,7 +22,7 @@ const Scoreboard = () => {
     const fetchData = async () => {
       try {
         const data = await getScoreboardData();
-        console.log(data.data);
+        // console.log(data.data);
         setData(data.data);
       } catch (error) {
 

@@ -43,7 +43,7 @@ const Home = () => {
       await updateTerraApi(storage.userId);
 
         const data = await getHealthData();
-        console.log(data);
+        // console.log(data);
         setHealthData({
           heartScore: data.data.heartScore || 0,
           dailySteps: data.data.totalSteps || 0,

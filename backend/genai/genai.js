@@ -18,9 +18,9 @@ const generationConfig = {
 };
 
 async function generateFeedback(componentScores, overallRiskScore) {
-  console.log("Generating feedback");
-  console.log("Component Scores:", componentScores);
-  console.log("Overall Risk Score:", overallRiskScore);
+  // console.log("Generating feedback");
+  // console.log("Component Scores:", componentScores);
+  // console.log("Overall Risk Score:", overallRiskScore);
 
   const prompt = `
 You are a health advisor AI. Based on the following health scores, provide detailed feedback and recommendations. The scores range from 0 to 10, where 0 is the worst and 10 is the best. Please provide feedback for each component as well as overall health advice. Format your response as a JSON object.
@@ -67,16 +67,16 @@ Format your response as a valid JSON object with the following structure:
     });
 
     const result = await chatSession.sendMessage("Generate health feedback");
-    console.log("AI Response:", result.response.text());
+    // console.log("AI Response:", result.response.text());
 
     let responseContent;
     try {
       const cleanedResponse = result.response.text().replace(/```json\n?|\n?```/g, '').trim();
       responseContent = JSON.parse(cleanedResponse);
-      console.log("Parsed Response:", responseContent);
+      // console.log("Parsed Response:", responseContent);
     } catch (parseError) {
       console.error("Error parsing AI response:", parseError);
-      console.log("Raw AI response:", result.response.text());
+      // console.log("Raw AI response:", result.response.text());
       throw new Error("AI response is not in the expected JSON format");
     }
 

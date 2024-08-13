@@ -25,39 +25,39 @@ async function calculateOverallHeartRiskScore(user, latestActivityData, latestSl
   let componentScores = {};
   let factorsCount = 0;
 
-  console.log('User:', user);
-  console.log('Latest Activity Data:', latestActivityData);
-  console.log('Latest Sleep Data:', latestSleepData);
-  console.log('Latest Body Data:', latestBodyData);
+  // console.log('User:', user);
+  // console.log('Latest Activity Data:', latestActivityData);
+  // console.log('Latest Sleep Data:', latestSleepData);
+  // console.log('Latest Body Data:', latestBodyData);
 
   // Sleep risk score
   if (latestSleepData) {
-    console.log('Calculating sleep risk score');
+    // console.log('Calculating sleep risk score');
     componentScores.sleepScore = calculateSleepRiskScore(latestSleepData, user.age);
-    console.log('Sleep risk score:', componentScores.sleepScore);
+    // console.log('Sleep risk score:', componentScores.sleepScore);
     factorsCount++;
   }
 
   // Activity risk score
   if (latestActivityData) {
-    console.log('Calculating activity risk score');
+    // console.log('Calculating activity risk score');
     componentScores.heartScore = calculateActivityRiskScore(latestActivityData, user.age);
-    console.log('Activity risk score:', componentScores.heartScore);
+    // console.log('Activity risk score:', componentScores.heartScore);
     factorsCount++;
   }
 
   // Body risk scores
   if (latestBodyData) {
-    console.log('Calculating body risk scores');
+    // console.log('Calculating body risk scores');
     componentScores.oxygenScore = oxygenScore(latestBodyData.oxygenData);
     componentScores.hrvScore = HRVScore(latestBodyData.heartRateData.avgHrvRmssd);
     componentScores.stressScore = stressScore({
       hrv: latestBodyData.heartRateData.avgHrvRmssd,
       restingHR: latestBodyData.heartRateData.restingHrBpm
     });
-    console.log('Oxygen score:', componentScores.oxygenScore);
-    console.log('HRV score:', componentScores.hrvScore);
-    console.log('Stress score:', componentScores.stressScore);
+    // console.log('Oxygen score:', componentScores.oxygenScore);
+    // console.log('HRV score:', componentScores.hrvScore);
+    // console.log('Stress score:', componentScores.stressScore);
     factorsCount += 3; // Counting oxygen, HRV, and stress as separate factors
   }
 
@@ -70,8 +70,8 @@ async function calculateOverallHeartRiskScore(user, latestActivityData, latestSl
     overallRiskScore = 5; // Default risk score if no data is available
   }
 
-  console.log('Overall risk score:', overallRiskScore);
-  console.log('Component scores:', componentScores);
+  // console.log('Overall risk score:', overallRiskScore);
+  // console.log('Component scores:', componentScores);
 
   return { overallRiskScore, componentScores };
 }
@@ -114,7 +114,7 @@ function calculateSleepRiskScore(data, userAge) {
 
 function calculateBodyRiskScore(data, userAge) {
   let score = 5; // Start with a neutral score
-   console.log(data,"data from body risk");
+  //  console.log(data,"data from body risk");
   // Heart scoring
   score += heartScore(data.heartRateData);
 
@@ -134,7 +134,7 @@ function calculateBodyRiskScore(data, userAge) {
 }
 
 async function sendAlert(user, riskScore) {
-  console.log(`Alert: High risk score (${riskScore}) for user ${user.name}`);
+  // console.log(`Alert: High risk score (${riskScore}) for user ${user.name}`);
 
   // Create a transporter using SMTP
   let testAccount = await nodemailer.createTestAccount();
@@ -156,8 +156,8 @@ async function sendAlert(user, riskScore) {
     html: `<p>Dear ${user.name},</p><p>Our system has detected a high risk score of <strong>${riskScore}</strong>...</p>`,
   });
 
-  console.log("Message sent: %s", info.messageId);
-  console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+  // console.log("Message sent: %s", info.messageId);
+  // console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
 }
 
 function processActivityData(data) {
@@ -186,7 +186,7 @@ function processActivityData(data) {
 function processSleepData(data) {
   const sleepData = data;
 
-  console.log("sleep", sleepData.data[0].metadata, "sleep");
+  // console.log("sleep", sleepData.data[0].metadata, "sleep");
 
   // Extract relevant data
   const heartRateData = sleepData.data[0].heart_rate_data.summary;
@@ -224,12 +224,12 @@ function processSleepData(data) {
 
 function processbodyData(data) {
   const bodyData = data;
-  console.log(bodyData, "bodyData");
+  // console.log(bodyData, "bodyData");
   const heartData = bodyData.data[0].heart_data;
   const oxygenData = bodyData.data[0].oxygen_data;
-  console.log(oxygenData, "oxygenData");
+  // console.log(oxygenData, "oxygenData");
   const measurementsData = bodyData.data[0].measurements_data.measurements;
-  console.log(heartData, "heart_data");
+  // console.log(heartData, "heart_data");
   return {
     ecgData: heartData.ecg_signal.map(signal => ({
       startTimestamp: signal.start_timestamp,
@@ -260,15 +260,15 @@ function processbodyData(data) {
 }
 
 function heartScore(data) {
-  console.log(data, "heartScore data");
+  // console.log(data, "heartScore data");
   if (!data) {
-    console.log("No heart rate data available for scoring");
+    // console.log("No heart rate data available for scoring");
     return null;
   }
 
   let score = 5; // Start with a neutral score
   const heartRate = data;
-  console.log("heartRate:", heartRate);
+  // console.log("heartRate:", heartRate);
 
   // Check resting heart rate
   if (heartRate.restingHrBpm !== undefined) {
@@ -293,18 +293,18 @@ function heartScore(data) {
     if (heartRate.avgHrvRmssd < 20) score -= 2;
     else if (heartRate.avgHrvRmssd > 50) score += 2;
   }
-  console.log(Math.max(0, Math.min(10, score)));
+  // console.log(Math.max(0, Math.min(10, score)));
   return Math.max(0, Math.min(10, score));
 }
 
 function sleepScore(data) {
   if (!data || typeof data.totalSleepDuration === 'undefined') {
-    console.log("Insufficient sleep data for scoring");
+    // console.log("Insufficient sleep data for scoring");
     return null;
   }
 
   let score = 5; // Start with a neutral score
-  console.log(data, "sleepScore");
+  // console.log(data, "sleepScore");
   // Total sleep duration
   const totalSleepHours = data.totalSleepDuration / 3600;
   if (totalSleepHours >= 7 && totalSleepHours <= 9) score += 2;
@@ -335,9 +335,9 @@ function oxygenScore(data) {
  
   let score = 5;
   const oxygen = data;
-  console.log("oxygen",data);
+  // console.log("oxygen",data);
   if (!oxygen || typeof oxygen.avgSaturationPercentage === 'undefined') {
-    console.log("Insufficient oxygen data for scoring");
+    // console.log("Insufficient oxygen data for scoring");
     return null;
   }
 
