@@ -49,8 +49,8 @@ exports.createUser = async (req, res) => {
       referenceId: newUser.userId,
       providers: ["FITBIT"],
       language: "EN",
-      authSuccessRedirectUrl: "http://localhost:5173/signin",
-      authFailureRedirectUrl: "http://localhost:5173/signup"
+      authSuccessRedirectUrl: `${process.env.FRONTEND_URL}/signin`,
+      authFailureRedirectUrl: `${process.env.FRONTEND_URL}/signin`,
       });
 
     if (terraSession.status === "success") {
