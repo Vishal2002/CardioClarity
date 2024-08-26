@@ -83,6 +83,13 @@ Our solution uses data from wearable devices to create a responsive heart attack
      TERRA_WEBHOOK_SECRET=your_terra_webhook_secret
      JWT_SECRET=your_jwt_secret
      GEMINI_API_KEY=your_gemini_api_key
+     FRONTEND_URL="http://localhost:5173"
+     ```
+    - Create a `.env` file in the frontend directory
+    - Add the following variables to the `.env` file:
+     ```
+     VITE_APP_URL="http://localhost:5000/api" 
+      
      ```
    - Replace `your_*` placeholders with your actual credentials
 4. Run the backend: `npm run start`
@@ -109,7 +116,7 @@ This solution has the potential to make a significant impact:
 
 ## For a Quick Look 
 
-- Visit the Site [here]()
+- Visit the Site [here]("https://cardio-clarity.vercel.app/")
 
 **Email:** `Test@gmail.com`  
 **Password:** `Test@1234`
