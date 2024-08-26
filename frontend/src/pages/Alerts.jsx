@@ -22,7 +22,7 @@ const Alerts = ({ ecgData }) => {
         {ecgData.map((data, index) => (
           <div key={index} className={`bg-white rounded-lg shadow-md p-6 border-l-4 ${getAlertBorderColor(data.afibClassification)}`}>
             <h3 className="text-xl font-semibold mb-2 text-purple-600">{getAlertTitle(data.afibClassification)}</h3>
-            <p className="mb-2">Date: <span className="font-medium">{new Date(data.startTimestamp.$date).toLocaleString()}</span></p>
+            <p className="mb-2">Date: <span className="font-medium">{new Date(data.startTimestamp).toLocaleString()}</span></p>
             <p className="mb-2">Average Heart Rate: <span className="font-medium">{data.avgHrBpm} BPM</span></p>
             <p className="text-sm">{getAlertMessage(data.afibClassification, data.avgHrBpm)}</p>
           </div>

@@ -6,7 +6,7 @@ async function runCalculationForAllUsers() {
   try {
     const users = await User.find({});
     for (const user of users) {
-      await controller.calculateAndStoreScore({ params: { userId: user._id } }, { json: () => {} });
+      await controller.calculateAndStoreScore(user._id);
     }
     console.log('Calculation completed for all users');
   } catch (error) {

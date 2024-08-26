@@ -27,29 +27,37 @@ const formatSleepDuration = (minutes) => {
 
 const Home = () => {
   const [healthData, setHealthData] = useState({
-    heartScore: 0,
-    dailySteps: 0,
-    sleepDuration: '0min',
-    weight: 0
+    heartScore: { value: 0, date: null },
+    dailySteps: { value: 0, date: null },
+    sleepDuration: { value: '0min', date: null },
+    weight: { value: 0, date: null }
   });
-  
 
   useEffect(() => {
     const fetchHealthData = async () => {
       try {
         const storage = JSON.parse(localStorage.getItem('userData'));
       
-      // First, update the Terra API
-      await updateTerraApi(storage.userId);
+        await updateTerraApi(storage.userId);
 
         const data = await getHealthData();
-        // console.log(data);
         setHealthData({
-          heartScore: data.data.heartScore || 0,
-          dailySteps: data.data.totalSteps || 0,
-          sleepDuration: formatSleepDuration(data.data.sleepDuration || 0),
-          weight: Number((data.data.weight || 0).toFixed(2))
-        
+          heartScore: { 
+            value: data.data.heartScore.value || 0, 
+            date: data.data.heartScore.date 
+          },
+          dailySteps: { 
+            value: data.data.totalSteps.value || 0, 
+            date: data.data.totalSteps.date 
+          },
+          sleepDuration: { 
+            value: formatSleepDuration(data.data.sleepDuration.value || 0), 
+            date: data.data.sleepDuration.date 
+          },
+          weight: { 
+            value: Number((data.data.weight.value || 0).toFixed(2)), 
+            date: data.data.weight.date 
+          }
         });
       } catch (error) {
         console.error('Failed to fetch health data:', error);
@@ -64,22 +72,23 @@ const Home = () => {
         <h1 className="text-3xl font-bold text-purple-800 mb-8">Health Dashboard</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <GlassmorphicCard title="Heart Health" icon={<FaHeart className="text-red-500 text-2xl" />}>
-            <HeartGaugeChart score={healthData.heartScore} />
+            <HeartGaugeChart score={healthData.heartScore.value} />
+            <div className="text-center mt-2">Last updated: {healthData.heartScore.date}</div>
           </GlassmorphicCard>
           
           <GlassmorphicCard title="Daily Steps" icon={<FaWalking className="text-blue-500 text-2xl" />}>
-            <div className="text-4xl font-bold text-center">{healthData.dailySteps}</div>
-            <div className="text-center mt-2">steps today</div>
+            <div className="text-4xl font-bold text-center">{healthData.dailySteps.value}</div>
+            <div className="text-center  mt-2">steps on {healthData.dailySteps.date}</div>
           </GlassmorphicCard>
           
           <GlassmorphicCard title="Sleep" icon={<FaBed className="text-indigo-500 text-2xl" />}>
-            <div className="text-4xl font-bold text-center">{healthData.sleepDuration}</div>
-            <div className="text-center mt-2">last night</div>
+            <div className="text-4xl font-bold text-center">{healthData.sleepDuration.value}</div>
+            <div className="text-center mt-2">on {healthData.sleepDuration.date}</div>
           </GlassmorphicCard>
           
           <GlassmorphicCard title="Weight" icon={<FaWeight className="text-green-500 text-2xl" />}>
-            <div className="text-4xl font-bold text-center">{healthData.weight} kg</div>
-            <div className="text-center mt-2">current weight</div>
+            <div className="text-4xl font-bold text-center">{healthData.weight.value} kg</div>
+            <div className="text-center mt-2">as of {healthData.weight.date}</div>
           </GlassmorphicCard>
         </div>
       </div>

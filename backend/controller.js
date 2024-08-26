@@ -214,52 +214,55 @@ exports.getActivitydata=async (req,res) => {
 exports.getHealthdata = async (req, res) => {
   try {
     const userId = new mongoose.Types.ObjectId(req.user._id);
-    const todayStart = moment().startOf('day').toDate();
-    const todayEnd = moment().endOf('day').toDate();
 
-    // Fetch activity data
-    const activityData = await ActivityData.findOne({
-      userId: userId,
-      startTime: { $gte: todayStart, $lte: todayEnd }
-    }).sort({ startTime: -1 }).select('steps startTime -_id');
+    // Fetch the most recent activity data
+    const activityData = await ActivityData.findOne({ userId })
+      .sort({ startTime: -1 })
+      .select('steps startTime -_id');
 
-    // Fetch body data
-    const bodyData = await BodyData.findOne({
-      userId: userId,
-      'bodyMeasurements.measurementTime': { $gte: todayStart, $lte: todayEnd }
-    }).sort({ 'bodyMeasurements.measurementTime': -1 }).select('bodyMeasurements -_id');
+    // Fetch the most recent body data
+    const bodyData = await BodyData.findOne({ userId })
+      .sort({ 'bodyMeasurements.measurementTime': -1 })
+      .select('bodyMeasurements -_id');
 
-    // Fetch health score
-    const healthScore = await HealthScore.findOne({
-      userId: userId,
-      timestamp: { $gte: todayStart, $lte: todayEnd }
-    }).sort({ createdAt: -1 });
-    
-    //  console.log(healthScore);
- 
-    // Fetch sleep data
-    const sleepData = await SleepData.findOne({
-      userId: userId,
-      startTime: { $gte: todayStart, $lte: todayEnd }
-    }).sort({ startTime: -1 }).select('sleepDuration.totalSleepDuration -_id');
+    // Fetch the most recent health score
+    const healthScore = await HealthScore.findOne({ userId })
+      .sort({ timestamp: -1 })
+      .select('overallScore timestamp -_id');
+
+    // Fetch the most recent sleep data
+    const sleepData = await SleepData.findOne({ userId })
+      .sort({ startTime: -1 })
+      .select('sleepDuration.totalSleepDuration startTime -_id');
 
     // Combine the data
     const combinedData = {
-      totalSteps: activityData?.steps || null,
-      date: activityData ? moment(activityData.startTime).format('DD-MM-YYYY') : null,
-      weight: bodyData?.bodyMeasurements[bodyData.bodyMeasurements.length - 1]?.weightKg || null,
-      heartScore: healthScore?.overallScore || 6,
-      sleepDuration: sleepData?.sleepDuration?.totalSleepDuration || null
+      totalSteps: {
+        value: activityData?.steps || null,
+        date: activityData ? moment(activityData.startTime).format('DD-MM-YYYY') : null
+      },
+      weight: {
+        value: bodyData?.bodyMeasurements[bodyData.bodyMeasurements.length - 1]?.weightKg || null,
+        date: bodyData ? moment(bodyData.bodyMeasurements[bodyData.bodyMeasurements.length - 1]?.measurementTime).format('DD-MM-YYYY') : null
+      },
+      heartScore: {
+        value: healthScore?.overallScore || null,
+        date: healthScore ? moment(healthScore.timestamp).format('DD-MM-YYYY') : null
+      },
+      sleepDuration: {
+        value: sleepData?.sleepDuration?.totalSleepDuration || null,
+        date: sleepData ? moment(sleepData.startTime).format('DD-MM-YYYY') : null
+      }
     };
 
     // Check if we have any data
-    if (Object.values(combinedData).every(value => value === null)) {
-      return res.status(404).json({ message: "No health data found for today" });
+    if (Object.values(combinedData).every(item => item.value === null)) {
+      return res.status(404).json({ message: "No health data found" });
     }
 
     res.status(200).json({
       data: combinedData,
-      message: "Successfully fetched today's health data"
+      message: "Successfully fetched most recent health data"
     });
 
   } catch (error) {
@@ -345,13 +348,13 @@ exports.getBodyData = async (req, res) => {
 exports.calculateAndStoreScore = async (userId) => {
   try {
     const user = await User.findById(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
     const latestActivityData = await ActivityData.findOne({ userId }).sort({ createdAt: -1 }).limit(1).lean();
     const latestSleepData = await SleepData.findOne({ userId }).sort({ createdAt: -1 }).limit(1).lean();
     const latestBodyData = await BodyData.findOne({ userId }).sort({ createdAt: -1 }).limit(1).lean();
-
-    // console.log(latestActivityData,"Activity");
-    // console.log(latestBodyData,"Body");
-    // console.log(latestSleepData,"Sleep");
 
     // Calculate the overall risk score and component scores using the latest data
     const { overallRiskScore, componentScores } = await calculateOverallHeartRiskScore(
@@ -360,22 +363,23 @@ exports.calculateAndStoreScore = async (userId) => {
       latestSleepData,
       latestBodyData
     );
-    // console.log("Before ai feedback: " );
+
     const aiFeedback = await generateFeedback(componentScores, overallRiskScore);
-    // console.log(aiFeedback,"feedback");
+
     // Create and save a new HealthScore
     const healthScore = new HealthScore({
       userId: user._id,
       overallScore: overallRiskScore,
       componentScores: componentScores,
-      feedback: aiFeedback 
+      feedback: aiFeedback
     });
     await healthScore.save();
-    user.latestRiskScore=overallRiskScore;
-    await user.save()
-  
+
+    user.latestRiskScore = overallRiskScore;
+    await user.save();
+
     if (overallRiskScore < RISK_THRESHOLD) {
-      await sendAlert(user, overallRiskScore); 
+      await sendAlert(user, overallRiskScore);
     }
 
     return {
@@ -384,7 +388,7 @@ exports.calculateAndStoreScore = async (userId) => {
       feedback: aiFeedback
     };
   } catch (error) {
-    console.error(error);
+    console.error('Error in calculateAndStoreScore:', error);
     throw new Error("Internal Server Error");
   }
 };
