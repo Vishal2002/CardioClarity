@@ -116,7 +116,7 @@ This solution has the potential to make a significant impact:
 
 ## For a Quick Look 
 
-- Visit the Site [here]("https://cardio-clarity.vercel.app/")
+- Visit the Site [here](https://cardio-clarity.vercel.app/)
 
 **Email:** `Test@gmail.com`  
 **Password:** `Test@1234`
